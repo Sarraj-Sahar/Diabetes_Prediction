@@ -1,16 +1,18 @@
 # Importation des bibliothèques
-from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
+
 import os
 import pandas as pd
+
 import matplotlib.pyplot as plt
 import numpy as np
+
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from PIL import Image
 import streamlit as st
 # bib pour visualiser et manipuler les outils statistiques
+
 import seaborn as sns
 import warnings
 warnings.filterwarnings('ignore')
@@ -18,8 +20,12 @@ warnings.filterwarnings('ignore')
 
 # Adding multiple databases to select from
 # Create a title and a sub-title
+
+image = Image.open("./image.jfif")
+st.image(image)
+
 st.write("""
-# Diabetes Detection
+# Diabetes Detection App 
 ## Detect if someone has diabetes using machine learning and python 
 """)
 st.subheader('')
@@ -43,15 +49,15 @@ dataset = pd.read_csv(filename)
 # ########## DATA PREPROCESSING
 # ########## change 0s to median values
 
-# Les Outlayers et les valeurs Manquantes
-# On remplace les 0 par NaN
+# Outlayers and Missing values
+# we replace all 0s with NaN
 
 cols = ["Glucose", "BloodPressure", "SkinThickness", "Insulin", "BMI"]
 for col in cols:
     dataset[col].replace(0, np.NaN, inplace=True)
 
 
-# On peut remplir les valeurs avec la médiane (depend si le patient est diabétique ou non)
+# Changes values with median value (depend if the patient has diabetes or not)
 for col in dataset.columns:
     dataset.loc[(dataset["Outcome"] == 0) & (dataset[col].isnull()),
                 col] = dataset[dataset["Outcome"] == 0][col].median()
@@ -69,21 +75,42 @@ st.subheader('Data Information: ')
 st.dataframe(dataset)
 
 # Show statistics on the data
+
+st.subheader('')
+st.subheader('')
 st.subheader('Data Description : mean , max,...')
-st.write(dataset.describe())
+if st.checkbox("Show Description"):
+    st.write(dataset.describe())
 
 
 # Show Columns
+st.subheader('')
+st.subheader('')
 st.subheader('Show All columns in our database')
 if st.button("Column Names"):
     st.write(dataset.columns)
 
+
+# Show Shape
+st.subheader('')
+st.subheader('')
+st.subheader('Show Data shape')
+
+if st.checkbox("Shape of Dataset"):
+    st.write(dataset.shape)
+
+
 # # heatmap to show correlation
 #  set the size of figure to 12 by 10.
-st.subheader(' Show between correlation our Variables using heatmap :')
-fig = plt.figure(figsize=(12, 10))
-p = sns.heatmap(dataset.corr(), annot=True, cmap='YlGnBu')
-st.write(fig)
+st.subheader('')
+st.subheader('')
+st.subheader(' Show correlation between our Variables using heatmap :')
+
+# Seaborn Plot
+if st.checkbox("Show heatmap"):
+    fig = plt.figure(figsize=(12, 10))
+    p = sns.heatmap(dataset.corr(), annot=True, cmap='YlGnBu')
+    st.write(fig)
 
 
 # Split the data into independent 'X' and dependent 'Y' variables
@@ -107,7 +134,7 @@ def get_user_input():
     age = st.sidebar.slider('age', 15, 81, 29)
 
     # Store a dictionary into a variable
-    user_data = {'pregnancies': pregnancies,
+    user_data = {'pregnancies': pregnancies,  # string (attribute/feature) : int from silder
                  'glucose': glucose,
                  'blood_pressure': blood_pressure,
                  'skin_thickness': skin_thickness,
@@ -117,9 +144,9 @@ def get_user_input():
                  'age': age
                  }
 
-    # Transform the data into a data frame
-    features = pd. DataFrame(user_data, index=[0])
-    return features
+    # Transform the data into a data frame called features
+    features = pd.DataFrame(user_data, index=[0])
+    return features   # ===> def userInput returns "features" which the model will work on
 
 
 # Store the user input into a variable
@@ -136,8 +163,10 @@ RandomForestClassifier.fit(X_train, Y_train)
 
 # Show the models metrics
 st.subheader('Model Test Accuracy Score:')
-st.write(str(accuracy_score(Y_test, RandomForestClassifier.predict(X_test)) * 100) + '%')
+st.write(str(accuracy_score(
+    Y_test, RandomForestClassifier.predict(X_test)) * 100) + '%')
 
+# the model takes the userinput --> classifies it --> returns a prediction : 0 or 1
 # Store the models predictions in a variable
 prediction = RandomForestClassifier.predict(user_input)
 
@@ -145,22 +174,10 @@ prediction = RandomForestClassifier.predict(user_input)
 st.subheader('Classification: ')
 st.write(prediction)
 
-
-# st.subheader('Logistic Regression :')
-
-# features = dataset[['Pregnancies', 'Glucose', 'BloodPressure',
-#                     'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']]
-# Y = dataset['Outcome']
-
-# train_features, test_features, train_labels, test_labels = train_test_split(
-#     features, Y)
-
-# scaler = StandardScaler()
-
-# train_features = scaler.fit_transform(train_features)
-# test_features = scaler.transform(test_features)
-
-# model = LogisticRegression()
-# model.fit(X_train, train_labels)
-# LogisticRegression_prediction = (model.score(train_features, train_labels))
-# st.write(LogisticRegression_prediction)
+st.subheader('')
+st.subheader('')
+st.subheader('')
+st.subheader('')
+st.write("""
+-Developed by Sahar Sarraj
+""")
