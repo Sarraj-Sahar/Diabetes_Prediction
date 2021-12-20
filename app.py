@@ -9,7 +9,7 @@ import numpy as np
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from PIL import Image
+# from PIL import Image
 import streamlit as st
 # bib pour visualiser et manipuler les outils statistiques
 
@@ -21,8 +21,8 @@ warnings.filterwarnings('ignore')
 # Adding multiple databases to select from
 # Create a title and a sub-title
 
-image = Image.open("./image.jfif")
-st.image(image)
+# image = Image.open("./image.jfif")
+# st.image(image)
 
 st.write("""
 # Diabetes Detection App 
